@@ -1,6 +1,6 @@
 {
-    "name": "pf2ecli",
-    "version": "1.0.0",
+    "name": "pf2e-cli",
+    "version": "1.0.1",
     "description": "",
     "main": "index.js",
     "type": "module",

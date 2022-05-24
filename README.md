@@ -5,5 +5,5 @@ Simple module pour générer un personnage sur Pathfinder 2. Le fichier **out/pl
 ## Utilisation
 
 ```
-npx pf2ecli
+npx pf2e-cli
 ```
