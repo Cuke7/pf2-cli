@@ -9,52 +9,52 @@ import gradient from 'gradient-string';
 import fs from 'fs';
 import { mdToPdf } from 'md-to-pdf';
 
-// // Initialisation
-// let spinner;
+// Initialisation
+let spinner;
 
-// let dir = "./out"
-// if (!fs.existsSync(dir)) {
-//     fs.mkdirSync(dir);
-// }
+let dir = "./out"
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
 
-// let rawdata = fs.readFileSync('dictionary.json');
-// let dictionary = JSON.parse(rawdata);
+let rawdata = fs.readFileSync('dictionary.json');
+let dictionary = JSON.parse(rawdata);
 
-// // Question flow
-// console.clear()
+// Question flow
+console.clear()
 
-// await displayWelcomeText("Pathbuilder")
-// let name = await askName();
-// let level = await askLevel();
-// let classe = await askClasses();
-// let ancestry = await askAncestries();
-// let feats = await loadFeats();
-// let classFeats = []
-// let userValidation = false;
-// while (!userValidation) {
-//     classFeats = await askFeats(feats[0], true)
-//     userValidation = await confirmFeats(classFeats)
-// }
-// userValidation = false
-// let ancestryFeats = []
-// while (!userValidation) {
-//     ancestryFeats = await askFeats(feats[1], false)
-//     userValidation = await confirmFeats(ancestryFeats)
-// }
+await displayWelcomeText("Pathbuilder")
+let name = await askName();
+let level = await askLevel();
+let classe = await askClasses();
+let ancestry = await askAncestries();
+let feats = await loadFeats();
+let classFeats = []
+let userValidation = false;
+while (!userValidation) {
+    classFeats = await askFeats(feats[0], true)
+    userValidation = await confirmFeats(classFeats)
+}
+userValidation = false
+let ancestryFeats = []
+while (!userValidation) {
+    ancestryFeats = await askFeats(feats[1], false)
+    userValidation = await confirmFeats(ancestryFeats)
+}
 
-// // Files generation
-// let player = {
-//     name,
-//     level,
-//     classe,
-//     ancestry,
-//     classFeats,
-//     ancestryFeats
-// }
-// fs.writeFileSync("./out/player.json", JSON.stringify(player));
-// console.log(blue("Fichier ") + red("./out/player.json ") + blue("généré avec succès"))
-let rawdata = fs.readFileSync('./out/player.json');
-let player = JSON.parse(rawdata);
+// Files generation
+let player = {
+    name,
+    level,
+    classe,
+    ancestry,
+    classFeats,
+    ancestryFeats
+}
+fs.writeFileSync("./out/player.json", JSON.stringify(player));
+console.log(blue("Fichier ") + red("./out/player.json ") + blue("généré avec succès"))
+// let rawdata = fs.readFileSync('./out/player.json');
+// let player = JSON.parse(rawdata);
 await generatePDF(player)
 console.log(blue("Fichier ") + red("./out/player.pdf ") + blue("généré avec succès."))
 
@@ -71,8 +71,8 @@ function translate(text) {
 
 async function generatePDF(player) {
     let content ="";
-    content+="---\nstylesheet:\n  -   ./styles.css\n"
-    content+="pdf_options:\n  margins: 0mm\n---"
+    // content+="---\nstylesheet:\n  -   ./styles.css\n"
+    // content+="pdf_options:\n  margins: 0mm\n---"
     addLine("# " + player.name)
     addLine("## Dons de classe")
     for (const feat of player.classFeats) {
