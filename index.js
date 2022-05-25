@@ -186,7 +186,7 @@ async function askClasses() {
         name: "classe",
         type: "list",
         message: "Quelle classe de personnage avez vous choisi ?",
-        choices: classesChoice, default: 13,
+        choices: classesChoice.sort(frsort), default: 13,
     })
     return answer.classe
 }
@@ -207,7 +207,7 @@ async function askAncestries() {
         name: "ancestry",
         type: "list",
         message: "Quelle est son ascendance ?",
-        choices: ancestriesChoice, default: 6,
+        choices: ancestriesChoice.sort(frsort), default: 6,
     })
     return answer.ancestry
 }
@@ -240,7 +240,7 @@ async function askFeats(feats, isClass) {
     } else {
         for (const featLevel of classe.data.ancestryFeatLevels.value) {
             if (featLevel <= level) {
-                let filteredFeats = feats.filter(feat => feat.data.level.value <= featLevel).map(item => ({ name: translate(item.name), value: item }));
+                let filteredFeats = feats.filter(feat => feat.data.level.value <= featLevel).map(item => ({ name: translate(item.name), value: item })).sort(frsort);;
 
                 selectedFeats.push(await inquirer.prompt([
                     {
