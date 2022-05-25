@@ -227,7 +227,7 @@ async function askFeats(feats, isClass) {
     if (isClass) {
         for (const featLevel of classe.data.classFeatLevels.value) {
             if (featLevel <= level) {
-                let filteredFeats = feats.filter(feat => feat.data.level.value <= featLevel).map(item => ({ name: translate(item.name), value: item }));
+                let filteredFeats = feats.filter(feat => feat.data.level.value <= featLevel).map(item => ({ name: translate(item.name), value: item })).sort(frsort);
 
                 selectedFeats.push(await inquirer.prompt([
                     {
@@ -275,4 +275,8 @@ function red(text) {
 
 function blue(text) {
     return chalk.blue(text)
+}
+
+function frsort(a, b) {
+    return a.name.localeCompare(b.name);
 }
