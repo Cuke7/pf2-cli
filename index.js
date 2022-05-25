@@ -7,7 +7,7 @@ import { createSpinner } from 'nanospinner'
 import figlet from 'figlet';
 import gradient from 'gradient-string';
 import fs from 'fs';
-import { mdToPdf } from 'md-to-pdf';
+import pdf from 'html-pdf-node';
 
 // Initialisation
 let spinner;
@@ -53,9 +53,11 @@ let player = {
 }
 fs.writeFileSync("./out/player.json", JSON.stringify(player));
 console.log(blue("Fichier ") + red("./out/player.json ") + blue("généré avec succès"))
-// let rawdata = fs.readFileSync('./out/player.json');
-// let player = JSON.parse(rawdata);
+// let data = fs.readFileSync('./out/player.json');
+// let player = JSON.parse(data);
+spinner = createSpinner(grey('Génération du PDF...')).start()
 await generatePDF(player)
+spinner.success()
 console.log(blue("Fichier ") + red("./out/player.pdf ") + blue("généré avec succès."))
 
 
@@ -70,24 +72,60 @@ function translate(text) {
 }
 
 async function generatePDF(player) {
-    let content ="";
-    // content+="---\nstylesheet:\n  -   ./styles.css\n"
-    // content+="pdf_options:\n  margins: 0mm\n---"
-    addLine("# " + player.name)
-    addLine("## Dons de classe")
+    let options = {
+        format: 'A4', margin: {
+            top: "15mm",
+            bottom: "15mm",
+            left: "15mm",
+            right: "15mm"
+        }
+    };
+    let html = "<body>"
+    html += '<div style="column-count: 2;margin-left: auto; margin-right: auto;">'
+
     for (const feat of player.classFeats) {
-        addLine("- ### " + feat.name)
-        addLine(feat.data.description.value)
+        let translation = await axios.get("https://pf2-database.herokuapp.com/wiki?id=" + feat._id)
+        html += addBlock(translation.data.nameFR, translation.data.descriptionFR)
     }
-    addLine("")
-    addLine("## Dons ancestraux")
+
     for (const feat of player.ancestryFeats) {
-        addLine("- ### " + feat.name)
-        addLine(feat.data.description.value)
+        let translation = await axios.get("https://pf2-database.herokuapp.com/wiki?id=" + feat._id)
+        html += addBlock(translation.data.nameFR, translation.data.descriptionFR)
     }
-    await mdToPdf({ content }, { dest: './out/player.pdf' });
-    function addLine(text) {
-        content += "\n" + text
+
+    html += "</div>"
+    html += "</body>"
+
+    html += addStyles()
+
+    // fs.writeFileSync("./test.html", html);
+
+    let file = { content: html };
+    return new Promise(function (resolve, reject) {
+        pdf.generatePdf(file, options).then(pdfBuffer => {
+            // console.log("PDF Buffer:-", pdfBuffer);
+            fs.writeFileSync('./out/player.pdf', pdfBuffer)
+            resolve()
+        });
+    })
+
+
+    function addBlock(title, text) {
+        let content = '<div style="padding: 10px 20px 0 20px; display: inline-block; font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; line-height: 1.5; text-align: left; break-inside: avoid-column; break-inside: avoid;">'
+        content += "<h2>" + title + "</h2>"
+        content += text
+        content += "</div>"
+        return content
+    }
+
+    function addStyles() {
+        return `
+        <style>
+            h2 {
+                color: #6D0000;
+            }
+        </style>
+        `
     }
 }
 
